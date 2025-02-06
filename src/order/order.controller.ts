@@ -1,3 +1,4 @@
+// filepath: /Users/apple/Documents/nest-project/order-management/src/order/order.controller.ts
 import {
   Controller,
   Post,
@@ -9,11 +10,12 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { OrderCreateInputDto, OrderUpdateInputDto } from './dto/order.dto';
 import { AuthGuard } from '../common/auth.guard';
 
+@ApiTags('orders')
 @Controller('orders')
 @UseGuards(AuthGuard)
 export class OrderController {
@@ -21,6 +23,10 @@ export class OrderController {
 
   @Post('create')
   @ApiBody({ type: OrderCreateInputDto })
+  @ApiResponse({
+    status: 201,
+    description: 'The order has been successfully created.',
+  })
   async createOrder(
     @Body() createOrderDto: OrderCreateInputDto,
     @Req() req: any,
@@ -31,6 +37,11 @@ export class OrderController {
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The order has been successfully retrieved.',
+  })
+  @ApiResponse({ status: 404, description: 'Order not found.' })
   async getOrderById(@Param('id') id: string) {
     const order = await this.orderService.getOrderById(id);
     if (!order) {
@@ -41,6 +52,10 @@ export class OrderController {
 
   @Patch(':id/status')
   @ApiBody({ type: OrderUpdateInputDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The order status has been successfully updated.',
+  })
   async updateOrderStatus(
     @Param('id') id: string,
     @Body('status') status: OrderUpdateInputDto['status'],
