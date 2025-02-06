@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - order-management-web
+
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: web
+    command: ./start
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - order-management-web
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - order-management-web
+
+networks:
+  order-management-web:
+    driver: bridge
+
+volumes:
+  mongo-data: {}
