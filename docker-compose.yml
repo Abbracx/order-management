@@ -22,19 +22,19 @@ services:
       - .:/app
     depends_on:
       - redis
-      - mongo
+      # - mongo
     networks:
       - order-management-web
 
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - order-management-web
+  # mongo:
+  #   image: mongo:latest
+  #   container_name: mongo
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo-data:/data/db
+  #   networks:
+  #     - order-management-web
 
 networks:
   order-management-web:
